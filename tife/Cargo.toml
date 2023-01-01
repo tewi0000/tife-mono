@@ -1,0 +1,10 @@
+[package]
+name = "tife"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+color-eyre = "0.6.2"
+wcore = { path = "../wcore" }
+wgpu = "0.14.2"
+cgmath = "0.18.0"

@@ -1,0 +1,90 @@
+graph TD
+    A[raw-window-handle]
+    B[wgpu]
+    C[winit]
+
+    C -- window<br/>traits --> B
+
+    A ==> B
+    A ==> C
+
+
+
+graph TD
+    subgraph wgpu
+        InstanceCreation --> Instance
+        
+        Instance
+        Surface
+        Adapter
+        Device
+        Queue
+
+        InstanceCreation[/"Instance::new()"/]
+        SurfaceCreation[/".create_surface()"/]
+        AdapterRequest[/".request_adapter()"/]
+        DeviceRequest[/".request_device()"/]
+
+        Instance ==> SurfaceCreation
+        SurfaceCreation --> Surface
+        Instance ==> AdapterRequest
+        Surface  -..-> AdapterRequest
+        AdapterRequest --> Adapter
+        Adapter ==> DeviceRequest
+        DeviceRequest --> Device
+        DeviceRequest --> Queue
+
+        ConfigureSurface[/".configure()"/]
+
+        Surface ==> ConfigureSurface
+    end
+
+    subgraph winit
+        Window
+        WindowTraits{{"raw-window-handle"}}
+
+        Window --- WindowTraits
+    end
+
+    WindowTraits -.-> SurfaceCreation
+
+
+
+graph TD
+    Surface
+    SurfaceTexture
+    Texture
+    TextureView
+
+    RequestSurfaceTexture[/".get_current_texture()"/]
+    ViewCreation[/".create_view()"/]
+    Present[/".present()"/]
+
+    Surface ==> RequestSurfaceTexture
+    RequestSurfaceTexture --> SurfaceTexture
+    SurfaceTexture --> Texture
+    Texture ==> ViewCreation
+    ViewCreation --> TextureView
+    TextureView ==> Rendering(Rendering)
+    SurfaceTexture ======> Present
+
+    Rendering -..-> |After| Present
+
+
+
+graph TD
+    subgraph Rendering
+        CommandEncoderCreation[/".create_command_encoder()"/]
+        Finish[/".finish()"/]
+        Submit[/"Submit"/]
+
+        Device         ==> CommandEncoderCreation --> CommandEncoder
+        CommandEncoder ==> Finish                 --> CommandBuffer
+
+        Queue         =========> Submit
+        CommandBuffer -.-> Submit
+        DrawCalls -..-> |After| Submit
+        CommandEncoder ===> BeginRenderPass[/".begin_render_pass()"/]
+        BeginRenderPass --> RenderPass ==> DrawCalls(Draw Calls)
+        TextureView -.-> BeginRenderPass
+    end
