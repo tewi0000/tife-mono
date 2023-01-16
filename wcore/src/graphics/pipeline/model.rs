@@ -6,6 +6,7 @@ use super::{shader::scene::SceneSlot, Pipeline};
 
 pub struct ModelPipeline {
     pipeline: wgpu::RenderPipeline,
+    
     scene_uniform: Uniform<[[f32; 4]; 4]>
 }
 
@@ -19,19 +20,31 @@ impl Pipeline for ModelPipeline {
 impl ModelPipeline {
     pub fn new(device: &wgpu::Device, surface_configuration: &wgpu::SurfaceConfiguration, scene: &impl Scene, depth: bool) -> Self {
         let shader = device.create_shader_module(include_wgsl!("model.wgsl"));
-        let layout = Texture::default_layout(device);
-        let pipeline = utils::pipeline(device, &shader, surface_configuration, &[
+        
+        let bind_layout = &[
             scene.layout(),
-            &layout,
-        ], &[
+            &Texture::default_layout(device),
+        ];
+
+        let buffer_layout = &[
             Vertex::describe(),
             ModelRaw::describe(),
-        ], depth);
+        ];
+
+        let pipeline = utils::pipeline(
+            device,
+            &shader,
+            surface_configuration,
+            bind_layout,
+            buffer_layout,
+            depth
+        );
 
         let scene_uniform = Uniform::new(device);
 
         return Self {
             pipeline,
+            
             scene_uniform,
         };
     }

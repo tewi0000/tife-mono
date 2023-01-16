@@ -56,7 +56,7 @@ pub fn pipeline(device  : &Device,
                 buffers : &[wgpu::VertexBufferLayout],
                 depth   : bool) -> wgpu::RenderPipeline {
     let pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-        label: Some("Render Pipeline Layout"),
+        label                : Some("Render Pipeline Layout"),
         push_constant_ranges : &[],
         bind_group_layouts   : groups,
     });
@@ -71,6 +71,7 @@ pub fn pipeline(device  : &Device,
             entry_point : "vertex_main",
             buffers     : buffers,
         },
+
         fragment: Some(wgpu::FragmentState {
             module      : &shader,
             entry_point : "fragment_main",
@@ -91,6 +92,7 @@ pub fn pipeline(device  : &Device,
             unclipped_depth    : false,                   // Requires Features::DEPTH_CLIP_CONTROL
             conservative       : false,                   // Requires Features::CONSERVATIVE_RASTERIZATION
         },
+
         depth_stencil: if depth { Some(wgpu::DepthStencilState {
             format              : wgpu::TextureFormat::Depth32Float,
             depth_write_enabled : true,
@@ -98,6 +100,7 @@ pub fn pipeline(device  : &Device,
             stencil             : wgpu::StencilState::default(),
             bias                : wgpu::DepthBiasState::default(),
         }) } else { None },
+        
         multiview   : None,
         multisample : wgpu::MultisampleState {
             count                     : 1,

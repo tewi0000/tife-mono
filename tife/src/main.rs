@@ -1,3 +1,5 @@
+#![allow(unused_variables)]
+
 pub mod screen;
 pub mod state;
 
