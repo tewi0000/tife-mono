@@ -56,7 +56,7 @@ pub struct Model {
     pub color    : cgmath::Vector4<f32>,
 }
 
-impl Instance<ModelRaw> for Model {
+impl Instance for Model {
     fn to_raw(&self) -> ModelRaw {
         return ModelRaw {
             color: self.color.into(),
@@ -65,4 +65,6 @@ impl Instance<ModelRaw> for Model {
                   * cgmath::Matrix4::from(self.rotation)).into(),
         };
     }
+
+    type InstanceRaw = ModelRaw;
 }
